@@ -19,7 +19,7 @@ aoai_deployment_name = os.getenv("AOAI_DEPLOYMENT")
 client = AzureOpenAI(    
     azure_endpoint=aoai_endpoint,    
     api_key=aoai_api_key,    
-    api_version="2024-08-01-preview"    
+    api_version="2024-10-21"    
 )    
   
 def image_to_data_url(image_bytes, mime_type='image/png'):    
@@ -82,7 +82,7 @@ def call_azure_openai(prompt, image_data_url, response_format, client=client, ao
             }]    
         }],    
         max_tokens=4000,    
-        temperature=0.7,    
+        temperature=0.4,    
         response_format=response_format    
     )    
   
@@ -107,7 +107,7 @@ def main():
                 1) The names of the wells. If there are none, write "NA".  
                 2) Is there a table in this page? Answer yes or no.  
                 3) If there is a table, is it a cost code table? A cost code table should have cost codes, cost code descriptions, and cost values in USD. Answer yes or no.
-                3) Every row in a cost code table. If there is no table, write "NA". If the table is not related to cost codes, write "Not a cost code table". If there is a cost code table, every row of the table will be an item in the output list. Every list item will contain a dictionary where the dictionary key is the column name, and the dictionary value is the value for that row. The code code table will include a column for the cost code (for example, 191-026), a column for the description (for example, "WATER AND TRANSFER"), and one or more columns for the cost(it could be, for example, dry hole cost,completion cost, total cost, etc) and the value in USD (for example, $1,000,000).
+                4) Every row in a cost code table. If there is no table, write "NA". If the table is not related to cost codes, write "Not a cost code table". If there is a cost code table, every row of the table will be an item in the output list. Every list item will contain a dictionary where the dictionary key is the column name, and the dictionary value is the value for that row. The code code table will include a column for the cost code (for example, 191-026), a column for the description (for example, "WATER AND TRANSFER"), and one or more columns for the cost (it could be, for example, dry hole cost,completion cost, total cost, etc) and the value in USD (for example, $1,000,000).
                 """    
   
     # class InnerDict(BaseModel):
@@ -142,7 +142,7 @@ def main():
                 try:    
                     # Load the page    
                     page = doc.load_page(page_number)    
-                    zoom = 2  # Zoom factor for image quality  
+                    zoom = 3  # Zoom factor for image quality  
                     pix = page.get_pixmap(matrix=fitz.Matrix(zoom, zoom))    
                     image_bytes = pix.tobytes()    
   
